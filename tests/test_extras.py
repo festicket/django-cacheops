@@ -150,6 +150,16 @@ class NoInvalidationTests(BaseTestCase):
                 invalidate_obj(post)
         self._template(invalidate)
 
+    def test_in_transaction(self):
+        with atomic():
+            post = Post.objects.cache().get(pk=1)
+
+            with no_invalidation:
+                post.save()
+
+        with self.assertNumQueries(0):
+            Post.objects.cache().get(pk=1)
+
 
 class LocalGetTests(BaseTestCase):
     def setUp(self):
