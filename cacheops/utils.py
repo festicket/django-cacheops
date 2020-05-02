@@ -67,7 +67,9 @@ def stamp_fields(model):
     """
     Returns serialized description of model fields.
     """
-    stamp = str(sorted(f.deconstruct()[:2] for f in model._meta.fields))
+    stamp = str(sorted(
+        json.dumps(f.deconstruct(), sort_keys=True, default=obj_key)
+        for f in model._meta.fields))
     return md5hex(stamp)
 
 
